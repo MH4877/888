@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN" style="height: 100%">
+
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body style="height: 100%; margin: 0">
+  <div id="container" style="height: 100%"></div>
+
+
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <!-- Uncomment this line if you want to dataTool extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/extension/dataTool.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to use gl extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to echarts-stat extension
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+  -->
+  <!-- Uncomment this line if you want to use map
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/china.js"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
+  -->
+  <!-- Uncomment these two lines if you want to use bmap extension
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=YOUR_API_KEY"></script>
+  <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/extension/bmap.min.js"></script>
+  -->
+
+  <script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+
+    var option;
+
+    const posList = [
+      'left',
+      'right',
+      'top',
+      'bottom',
+      'inside',
+      'insideTop',
+      'insideLeft',
+      'insideRight',
+      'insideBottom',
+      'insideTopLeft',
+      'insideTopRight',
+      'insideBottomLeft',
+      'insideBottomRight'
+    ];
+    app.configParameters = {
+      rotate: {
+        min: -90,
+        max: 90
+      },
+      align: {
+        options: {
+          left: 'left',
+          center: 'center',
+          right: 'right'
+        }
+      },
+      verticalAlign: {
+        options: {
+          top: 'top',
+          middle: 'middle',
+          bottom: 'bottom'
+        }
+      },
+      position: {
+        options: posList.reduce(function (map, pos) {
+          map[pos] = pos;
+          return map;
+        }, {})
+      },
+      distance: {
+        min: 0,
+        max: 100
+      }
+    };
+    app.config = {
+      rotate: 90,
+      align: 'top',
+      verticalAlign: 'middle',
+      position: 'insideBottom',
+      distance: 10,
+      onChange: function () {
+        const labelOption = {
+          rotate: app.config.rotate,
+          align: app.config.align,
+          verticalAlign: app.config.verticalAlign,
+          position: app.config.position,
+          distance: app.config.distance
+        };
+        myChart.setOption({
+          series: [
+            {
+              label: labelOption
+            },
+
+            {
+              label: labelOption
+            },
+            {
+              label: labelOption
+            },
+            {
+              label: labelOption
+            }
+          ]
+        });
+      }
+    };
+    const labelOption = {
+      show: true,
+      position: app.config.position,
+      distance: app.config.distance,
+      align: app.config.align,
+      verticalAlign: app.config.verticalAlign,
+      rotate: app.config.rotate,
+      formatter: '{c}  {name|{a}}',
+      fontSize: 15,
+      rich: {
+        name: {}
+      }
+    };
+    option = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      legend: {
+        data: ['XT300大桁架', "双层贝雷（上下加强）", "单层贝雷（打入桩）", "单层贝雷（扩大基础）"]
+      },
+      toolbox: {
+        show: true,
+        orient: 'vertical',
+        left: 'right',
+        top: 'bottom',
+        feature: {
+          mark: { show: true },
+          dataView: { show: true, readOnly: true },
+          magicType: { show: true, type: ['line', 'bar', 'stack'] },
+          restore: { show: true },
+          saveAsImage: { show: true }
+        }
+      },
+      xAxis: [
+        {
+          show: 1,
+
+          name: "成本对比图",
+          nameLocation: "center",
+          nameTextStyle: {
+            color: "black",
+            fontStyle: "oblique",
+            fontSize: 20,
+            fontFamily: "Courier New",
+            lineHeight: 50,
+
+
+          },
+
+          position: "bottom",
+          type: 'category',
+          axisTick: {
+            show: 1,
+            inside: 1,
+            length: 10
+          },
+          data: ['人工费', '机械费', '管理费', '耗材费']
+        }
+      ],
+      yAxis: [
+        {
+          show: 1,
+          type: 'value',
+          axisTick: { show: 0 },
+          axisLine: { show: 1, symbol: ['none', 'arrow'] },
+          axisLine: {
+            lineStyle: {
+              width: 10
+            }
+          },
+        }
+      ],
+      series: [
+        {
+          name: '首次架设传统方法',
+          type: 'bar',
+          barGap: 0,
+          label: labelOption,
+          emphasis: {
+            focus: 'series'
+          },
+          data: [14700, 10300, 8067.5, 3933]
+        },
+        {
+          name: "首次架设标准方法",
+          type: 'bar',
+          label: labelOption,
+          emphasis: {
+            focus: 'series'
+          },
+          data: [9000, 7766.7, 6091.7, 2520]
+        },
+        {
+          name: "周转传统方法",
+          type: 'bar',
+          label: labelOption,
+          emphasis: {
+            focus: 'series'
+          },
+          data: [14910, 14066.67, 8594.83, 2595.67]
+        },
+        {
+          name: "周转标准方法",
+          type: 'bar',
+          label: labelOption,
+          emphasis: {
+            focus: 'series'
+          },
+          data: [9660, 10116.67, 6139.17, 2011.67]
+        }
+      ]
+    };
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+  </script>
+</body>
+
+</html>
